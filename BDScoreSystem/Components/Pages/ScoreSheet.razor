@@ -1,0 +1,49 @@
+﻿@page "/scoresheet"
+@using BDScoreSystem.Interfaces
+@using BDScoreSystem.Models
+@using BDScoreSystem.Services
+
+@inject IBDScoreService _bdScoreService;
+
+@rendermode InteractiveServer
+
+<div class="container">
+    <div class="row">
+
+        <ScoreForm Model="dressageScoreModel"></ScoreForm>
+
+        <div class="col-lg-12">
+            <br />
+            <button class="btn btn-primary" @onclick="AddResult">Save</button>
+        </div>
+    </div>
+</div>
+
+<br />
+<hr />
+<br />
+
+<SqlResultsQuickGrid @ref="quickGrid"></SqlResultsQuickGrid>
+
+<br />
+
+<InMemoryResults Results="results" />
+
+@code {
+    private DressageResultViewModel dressageScoreModel = new();
+    protected List<DressageResultViewModel> results = new();
+    protected SqlResultsQuickGrid? quickGrid;
+
+    private void AddResult()
+    {
+        // Save to SQL
+        _bdScoreService.SaveScore(dressageScoreModel);
+
+        // Add to the list to show in-memory (circuit) state
+        results.Add(dressageScoreModel);
+        dressageScoreModel = new();
+
+        // Reload the quickgrid
+        if (quickGrid != null) quickGrid.Reload();
+    }
+}

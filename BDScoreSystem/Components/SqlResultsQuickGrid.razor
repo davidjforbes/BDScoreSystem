@@ -1,0 +1,30 @@
+﻿@using BDScoreSystem.Interfaces
+@inject IDbContextFactory<BDScoreDbContext> DbFactory
+@inject IBDScoreService _bdScoreService;
+@rendermode InteractiveServer
+
+<h3>Data from SQL (Interactive server)</h3>
+
+<QuickGrid ItemsProvider="GetScoresAsync" TGridItem="DressageResult">
+    <PropertyColumn Property="@(p => p.Date)" Title="Date" Format="dd-MM-yyyy" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Venue)" Title="Venue" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Judge)" Title="Judge" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Result)" Title="Score (%)" Sortable="true" />
+    <PropertyColumn Property="@(p => p.Placing)" Title="Placing" Sortable="true" />
+</QuickGrid>
+
+@code {
+
+    public void Reload()
+    {
+        StateHasChanged();
+    }
+
+    public async ValueTask<GridItemsProviderResult<DressageResult>> GetScoresAsync(GridItemsProviderRequest<DressageResult> request)
+    {
+        await Task.Yield();
+        var list = _bdScoreService.GetScores();
+
+        return GridItemsProviderResult.From(list.ToList(), list.Count());
+    }
+}

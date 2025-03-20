@@ -1,0 +1,70 @@
+﻿@using BDScoreSystem.Interfaces
+@using BDScoreSystem.Models
+
+<div class="col-lg-6">
+    <form>
+        <h3>Event details</h3>
+        <hr />
+        <div class="form-group">
+            <label>Dressage test</label>
+            <select class="form-control" @bind="@Model.DressageTestId">
+                @foreach (var test in Model.DressageTests)
+                {
+                    <option value="@test.Id"> @test.Name </option>
+                }
+            </select>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Venue</label>
+            <input @bind="Model.Date" class="form-control" type="date">
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Venue</label>
+            <input @bind="Model.Venue" class="form-control" placeholder="e.g. Aintree Equestrian Centre">
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Judge</label>
+            <input @bind="Model.JudgeName" class="form-control" placeholder="e.g. Jane Doe">
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Maximum test score</label>
+            <input @bind="Model.MaxScore" required type="number" class="form-control">
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Movement total</label>
+            <input @bind="Model.MovementTotal" required type="number" class="form-control">
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Placing</label>
+            <input @bind="Model.Placing" type="number" min="1" class="form-control">
+        </div>
+        <br />
+        <h3>Total: @Model.Result%</h3>
+    </form>
+</div>
+
+<div class="col-lg-6">
+    <form>
+        <h3>Collective marks</h3>
+        <hr />
+
+        @foreach (var collective in Model.CollectiveMarks)
+        {
+            <div class="form-group">
+                <label>@collective.Name (x @collective.Multiplier)</label>
+                <input @bind="collective.Mark" class="form-control" type="number">
+            </div>
+            <br />
+        }
+    </form>
+</div>
+
+@code {
+    [Parameter] public required DressageResultViewModel Model { get; set; }
+}
